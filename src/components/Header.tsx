@@ -57,19 +57,19 @@ const Header: React.FC = () => {
 
         {/* Navigation - Menu principal */}
         <nav className="flex justify-center py-4">
-          <div className="flex space-x-8 lg:space-x-12">
+          <div className="flex space-x-6 lg:space-x-8">
             <a href="#" className="relative text-sm font-medium text-gray-700 hover:text-gray-900">
               <span className="bg-blue-600 text-white px-2 py-1 text-xs font-bold uppercase">PRINCIPAL</span>
             </a>
-            <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">ÚLTIMAS</a>
-            <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">NEGÓCIOS</a>
-            <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">MERCADO</a>
-            <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">TECNOLOGIA</a>
-            <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">VIDA</a>
-            <a href="#" className="hidden md:block text-sm font-medium text-gray-700 hover:text-gray-900">ESTILO DE VIDA</a>
-            <a href="#" className="hidden md:block text-sm font-medium text-gray-700 hover:text-gray-900">LIDERANÇA</a>
-            <a href="#" className="hidden lg:block text-sm font-medium text-gray-700 hover:text-gray-900">EMAILS</a>
-            <a href="#" className="hidden lg:block text-sm font-medium text-gray-700 hover:text-gray-900">PODCASTS</a>
+            <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">BRASIL</a>
+            <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">MUNDO</a>
+            <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">POLÍTICA</a>
+            <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">ECONOMIA</a>
+            <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">SEGURANÇA</a>
+            <a href="#" className="hidden md:block text-sm font-medium text-gray-700 hover:text-gray-900">EDUCAÇÃO</a>
+            <a href="#" className="hidden md:block text-sm font-medium text-gray-700 hover:text-gray-900">CIÊNCIA</a>
+            <a href="#" className="hidden lg:block text-sm font-medium text-gray-700 hover:text-gray-900">SAÚDE</a>
+            <a href="#" className="hidden lg:block text-sm font-medium text-gray-700 hover:text-gray-900">ÚLTIMAS</a>
           </div>
         </nav>
 
@@ -78,7 +78,7 @@ const Header: React.FC = () => {
       </div>
     </header>
   );
-};
+};  1
 
 const Ticker: React.FC = () => {
   const cotacoes = [

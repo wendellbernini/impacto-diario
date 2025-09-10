@@ -3,22 +3,62 @@ import React from 'react';
 const CategorySection: React.FC = () => {
   const categories = [
     {
-      title: "Economia",
+      title: "Brasil",
       articles: [
         {
           title: "Inflação recua para 4,2% em dezembro e fica dentro da meta",
-          image: "💰",
+          image: "🇧🇷",
           color: "from-green-600 to-emerald-500"
-        },
-        {
-          title: "Dólar fecha em queda após decisão do Banco Central",
-          image: "💵",
-          color: "from-blue-600 to-cyan-500"
         },
         {
           title: "PIB cresce 2,9% no último trimestre do ano",
           image: "📈",
+          color: "from-blue-600 to-cyan-500"
+        },
+        {
+          title: "Desemprego cai para menor patamar em 8 anos",
+          image: "💼",
           color: "from-purple-600 to-pink-500"
+        }
+      ]
+    },
+    {
+      title: "Política",
+      articles: [
+        {
+          title: "Congresso aprova nova lei de proteção de dados",
+          image: "🏛️",
+          color: "from-red-500 to-orange-500"
+        },
+        {
+          title: "Supremo decide sobre marco temporal das terras indígenas",
+          image: "⚖️",
+          color: "from-blue-500 to-indigo-600"
+        },
+        {
+          title: "Governo anuncia pacote de medidas econômicas",
+          image: "📋",
+          color: "from-green-500 to-teal-500"
+        }
+      ]
+    },
+    {
+      title: "Economia",
+      articles: [
+        {
+          title: "Dólar fecha em queda após decisão do Banco Central",
+          image: "💵",
+          color: "from-yellow-600 to-orange-600"
+        },
+        {
+          title: "Petrobras anuncia maior lucro da história da empresa",
+          image: "🏢",
+          color: "from-gray-600 to-slate-700"
+        },
+        {
+          title: "Vale assina acordo de R$ 37 bilhões por Mariana",
+          image: "⛏️",
+          color: "from-pink-500 to-rose-600"
         }
       ]
     },
@@ -39,46 +79,6 @@ const CategorySection: React.FC = () => {
           title: "WhatsApp libera novos recursos de privacidade",
           image: "💬",
           color: "from-green-500 to-teal-500"
-        }
-      ]
-    },
-    {
-      title: "Negócios",
-      articles: [
-        {
-          title: "Petrobras anuncia maior lucro da história da empresa",
-          image: "🏢",
-          color: "from-yellow-600 to-orange-600"
-        },
-        {
-          title: "Vale assina acordo de R$ 37 bilhões por Mariana",
-          image: "⛏️",
-          color: "from-gray-600 to-slate-700"
-        },
-        {
-          title: "Magazine Luiza expande operações no Nordeste",
-          image: "🛒",
-          color: "from-pink-500 to-rose-600"
-        }
-      ]
-    },
-    {
-      title: "Estilo de Vida",
-      articles: [
-        {
-          title: "Tendências de moda para o verão 2024 já chegaram",
-          image: "👗",
-          color: "from-pink-500 to-purple-600"
-        },
-        {
-          title: "Novos destinos turísticos ganham destaque no Brasil",
-          image: "✈️",
-          color: "from-sky-500 to-blue-600"
-        },
-        {
-          title: "Alimentação saudável: 5 dicas para o ano novo",
-          image: "🥗",
-          color: "from-green-500 to-lime-500"
         }
       ]
     }

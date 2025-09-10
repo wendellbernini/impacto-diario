@@ -31,7 +31,7 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
     title: '',
     summary: '',
     content: '',
-    category: 'geral',
+    category: 'principal',
     image_url: '',
     image_credits: '',
     is_featured: false,
@@ -39,7 +39,7 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
   })
 
   const categories = [
-    'geral', 'politica', 'economia', 'esportes', 'tecnologia', 'saude', 'mundo', 'entretenimento'
+    'principal', 'brasil', 'mundo', 'politica', 'economia', 'seguranca', 'educacao', 'ciencia', 'saude', 'ultimas'
   ]
 
   useEffect(() => {
@@ -159,7 +159,7 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
         title: '',
         summary: '',
         content: '',
-        category: 'geral',
+        category: 'principal',
         image_url: '',
         image_credits: '',
         is_featured: false,
