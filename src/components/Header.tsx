@@ -57,7 +57,7 @@ const Header: React.FC = () => {
 
         {/* Navigation - Menu principal */}
         <nav className="flex justify-center py-4">
-          <div className="flex space-x-6 lg:space-x-8">
+          <div className="flex space-x-8 lg:space-x-10">
             <a href="#" className="relative text-sm font-medium text-gray-700 hover:text-gray-900">
               <span className="bg-blue-600 text-white px-2 py-1 text-xs font-bold uppercase">PRINCIPAL</span>
             </a>
