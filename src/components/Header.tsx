@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Search, Menu, Globe } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import "@fontsource/josefin-sans/700.css";
+import HamburgerMenu from './HamburgerMenu';
 
 interface HeaderProps {
   hideTicker?: boolean;
+  hideNavigation?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ hideTicker = false }) => {
+const Header: React.FC<HeaderProps> = ({ hideTicker = false, hideNavigation = false }) => {
   const location = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   // Determinar qual categoria está ativa baseada na rota
   const getActiveCategory = () => {
@@ -41,9 +44,9 @@ const Header: React.FC<HeaderProps> = ({ hideTicker = false }) => {
             {/* Linha sutil */}
             <div className="hidden sm:block w-px h-4 bg-gray-300"></div>
             
-            <div className="hidden sm:block text-sm text-gray-600">
-              Destaques
-            </div>
+            <Link to="/destaque" className="hidden sm:block text-sm text-gray-600 hover:text-gray-900 transition-colors">
+              Destaque
+            </Link>
           </div>
 
           {/* Center - Logo */}
@@ -66,7 +69,10 @@ const Header: React.FC<HeaderProps> = ({ hideTicker = false }) => {
             {/* Linha sutil */}
             <div className="hidden sm:block w-px h-4 bg-gray-300"></div>
             
-            <button className="p-2 hover:bg-gray-100 rounded-md">
+            <button 
+              onClick={() => setIsMenuOpen(true)}
+              className="p-2 hover:bg-gray-100 rounded-md transition-colors"
+            >
               <Menu className="h-5 w-5 text-gray-400" />
             </button>
           </div>
@@ -78,8 +84,9 @@ const Header: React.FC<HeaderProps> = ({ hideTicker = false }) => {
         </div>
 
         {/* Navigation - Menu principal */}
-        <nav className="flex justify-center py-4">
-          <div className="flex space-x-12 lg:space-x-16">
+        {!hideNavigation && (
+          <nav className="flex justify-center py-4">
+            <div className="flex space-x-12 lg:space-x-16">
             <Link to="/" className="relative text-sm font-medium text-gray-700 hover:text-gray-900">
               {activeCategory === 'principal' ? (
               <span className="bg-blue-600 text-white px-2 py-1 text-xs font-bold uppercase">PRINCIPAL</span>
@@ -152,10 +159,17 @@ const Header: React.FC<HeaderProps> = ({ hideTicker = false }) => {
             </Link>
           </div>
         </nav>
+        )}
 
         {/* Ticker animado de cotações */}
         {!hideTicker && <Ticker />}
       </div>
+      
+      {/* Menu hambúrguer */}
+      <HamburgerMenu 
+        isOpen={isMenuOpen} 
+        onClose={() => setIsMenuOpen(false)} 
+      />
     </header>
   );
 };  1

@@ -1,13 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useNews } from '../hooks/useNews';
+import { useBanners } from '../hooks/useBanners';
+import BannerDisplay from './BannerDisplay';
 
 const LatestSection: React.FC = () => {
   const { getLatestNews, getNewsByCategory, loading } = useNews();
+  const { getBanner } = useBanners();
   
   const latestNews = getLatestNews(5);
   const middleNews = getLatestNews(10).slice(5, 10); // 6ª, 7ª, 8ª, 9ª, 10ª
   const securityNews = getNewsByCategory('seguranca', 3);
+  const sidebarBanner = getBanner('homepage-sidebar');
 
   // Fallback para quando não há notícias suficientes
   const defaultLatestArticles = [
@@ -77,7 +81,9 @@ const LatestSection: React.FC = () => {
           
           {/* Coluna Esquerda - Últimas */}
           <div className="lg:col-span-3">
-            <div className="border-r border-gray-300 pr-6">
+            <div className="relative pr-6">
+              {/* Linha vertical que se estende por toda a altura */}
+              <div className="absolute right-0 top-0 bottom-0 w-px bg-gray-300"></div>
               <h2 className="text-xl font-bold text-gray-900 mb-6">Últimas</h2>
               <div className="space-y-4">
                 {loading ? (
@@ -136,7 +142,9 @@ const LatestSection: React.FC = () => {
 
           {/* Coluna Central - 5 Notícias Verticais */}
           <div className="lg:col-span-6">
-            <div className="border-r border-gray-300 pr-6">
+            <div className="relative pr-6">
+              {/* Linha vertical que se estende por toda a altura */}
+              <div className="absolute right-0 top-0 bottom-0 w-px bg-gray-300"></div>
               <div className="space-y-6">
                 {loading ? (
                   // Loading state
@@ -332,16 +340,20 @@ const LatestSection: React.FC = () => {
               
               {/* Banner de Publicidade */}
               <div className="mt-8">
-                <div className="bg-gradient-to-r from-orange-500 to-red-600 p-4 text-white text-center cursor-pointer hover:shadow-lg transition-shadow">
-                  <div className="mb-1">
-                    <span className="text-xs uppercase tracking-wide opacity-80">Publicidade</span>
+                {sidebarBanner ? (
+                  <BannerDisplay banner={sidebarBanner} />
+                ) : (
+                  <div className="bg-gradient-to-r from-orange-500 to-red-600 p-4 text-white text-center cursor-pointer hover:shadow-lg transition-shadow">
+                    <div className="mb-1">
+                      <span className="text-xs uppercase tracking-wide opacity-80">Publicidade</span>
+                    </div>
+                    <div className="text-2xl mb-2">📢</div>
+                    <h4 className="font-bold text-sm mb-1">Anuncie Aqui</h4>
+                    <p className="text-orange-100 text-xs">
+                      Espaço publicitário premium
+                    </p>
                   </div>
-                  <div className="text-2xl mb-2">📢</div>
-                  <h4 className="font-bold text-sm mb-1">Anuncie Aqui</h4>
-                  <p className="text-orange-100 text-xs">
-                    Espaço publicitário premium
-                  </p>
-                </div>
+                )}
               </div>
             </div>
           </div>

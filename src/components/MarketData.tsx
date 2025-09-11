@@ -1,29 +1,41 @@
 import React from 'react';
+import { useBanners } from '../hooks/useBanners';
+import BannerDisplay from './BannerDisplay';
 
 const MarketData: React.FC = () => {
+  const { getBanner } = useBanners();
+  const bottomBanner = getBanner('homepage-bottom');
+  
   return (
     <section className="py-6 mt-2">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-r from-blue-900 to-green-700 relative overflow-hidden">
-          {/* Background pattern */}
-          <div className="absolute inset-0 opacity-30">
-            <div className="w-full h-full bg-gradient-to-br from-green-400 via-blue-500 to-purple-600"></div>
+      <div className="w-full">
+        {bottomBanner ? (
+          <div className="flex justify-center">
+            <BannerDisplay banner={bottomBanner} />
           </div>
-          
-          <div className="relative px-8 py-8 text-white text-center">
-            <div className="mb-2">
-              <span className="text-xs uppercase tracking-wide opacity-80">Publicidade</span>
+        ) : (
+          <div className="flex justify-center">
+            <div className="bg-gradient-to-r from-blue-900 to-green-700 relative overflow-hidden" style={{ width: '728px', height: '90px' }}>
+              {/* Background pattern */}
+              <div className="absolute inset-0 opacity-30">
+                <div className="w-full h-full bg-gradient-to-br from-green-400 via-blue-500 to-purple-600"></div>
+              </div>
+              
+              <div className="relative px-6 py-2 text-white text-center flex items-center justify-center h-full">
+                <div>
+                  <div className="mb-0.5">
+                    <span className="text-xs uppercase tracking-wide opacity-80">Publicidade</span>
+                  </div>
+                  <div className="text-lg mb-0.5">🚀</div>
+                  <h3 className="font-bold text-sm mb-0.5">Anuncie Aqui</h3>
+                  <p className="text-blue-100 text-xs">
+                   
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="text-4xl mb-3">🚀</div>
-            <h3 className="font-bold text-2xl mb-3">Anuncie Aqui</h3>
-            <p className="text-blue-100 text-lg mb-4">
-              Alcance milhares de leitores diariamente
-            </p>
-            <p className="text-blue-200 text-sm">
-              Espaço premium para sua marca no jornal digital mais confiável
-            </p>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

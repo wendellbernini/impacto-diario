@@ -3,10 +3,14 @@ import { Link } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import { supabase, NewsItem } from '../lib/supabase';
+import { useBanners } from '../hooks/useBanners';
+import BannerDisplay from './BannerDisplay';
 
 const UltimasPage: React.FC = () => {
   const [latestNews, setLatestNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const { getBanner } = useBanners();
+  const ultimasBanner = getBanner('ultimas-sidebar');
 
   useEffect(() => {
     const fetchLatestNews = async () => {
@@ -122,15 +126,19 @@ const UltimasPage: React.FC = () => {
           {/* Área de banner - 20% */}
           <div className="hidden lg:block w-1/5">
             <div className="sticky top-8">
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
-                <div className="text-sm text-gray-500 mb-4">Publicidade</div>
-                <div className="bg-blue-100 h-96 flex items-center justify-center rounded">
-                  <div className="text-center">
-                    <div className="text-gray-600 font-medium mb-2">Banner de Propaganda</div>
-                    <div className="text-xs text-gray-500">300x600</div>
+              {ultimasBanner ? (
+                <BannerDisplay banner={ultimasBanner} />
+              ) : (
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                  <div className="text-sm text-gray-500 mb-4">Publicidade</div>
+                  <div className="bg-blue-100 h-96 flex items-center justify-center rounded">
+                    <div className="text-center">
+                      <div className="text-gray-600 font-medium mb-2">Banner de Propaganda</div>
+                      <div className="text-xs text-gray-500">300x600</div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

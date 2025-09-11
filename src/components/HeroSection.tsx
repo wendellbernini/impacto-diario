@@ -1,12 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useNews } from '../hooks/useNews';
+import { useBanners } from '../hooks/useBanners';
+import BannerDisplay from './BannerDisplay';
 
 const HeroSection: React.FC = () => {
   const { getUrgentNews, getFeaturedNews, loading } = useNews();
+  const { getBanner } = useBanners();
   
   const urgentNews = getUrgentNews();
   const featuredNews = getFeaturedNews();
+  const heroBanner = getBanner('homepage-hero');
   
 
   // Fallback para quando não há notícia urgente
@@ -177,19 +181,23 @@ const HeroSection: React.FC = () => {
             </div>
 
             {/* Banner de Anúncio */}
-            <div className="bg-gradient-to-r from-green-500 to-blue-600 p-6 text-white text-center cursor-pointer hover:shadow-lg transition-shadow">
-              <div className="mb-2">
-                <span className="text-xs uppercase tracking-wide opacity-80">Publicidade</span>
+            {heroBanner ? (
+              <BannerDisplay banner={heroBanner} />
+            ) : (
+              <div className="bg-gradient-to-r from-green-500 to-blue-600 p-6 text-white text-center cursor-pointer hover:shadow-lg transition-shadow">
+                <div className="mb-2">
+                  <span className="text-xs uppercase tracking-wide opacity-80">Publicidade</span>
+                </div>
+                <div className="text-2xl mb-2">🚀</div>
+                <h3 className="font-bold text-lg mb-2">Anuncie Aqui</h3>
+                <p className="text-sm opacity-90">
+                  Alcance milhares de leitores diariamente
+                </p>
+                <div className="mt-4 text-xs opacity-70">
+                  Banner 300x250 - Espaço Publicitário
+                </div>
               </div>
-              <div className="text-2xl mb-2">🚀</div>
-              <h3 className="font-bold text-lg mb-2">Anuncie Aqui</h3>
-              <p className="text-sm opacity-90">
-                Alcance milhares de leitores diariamente
-              </p>
-              <div className="mt-4 text-xs opacity-70">
-                Banner 300x250 - Espaço Publicitário
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

@@ -130,7 +130,7 @@ export default function AdminLogin() {
         {/* Footer */}
         <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
-            © 2024 Portal de Notícias - Painel Administrativo
+            © 2025 Portal de Notícias - Painel Administrativo
           </p>
         </div>
       </div>

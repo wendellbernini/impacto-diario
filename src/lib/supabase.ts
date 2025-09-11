@@ -35,10 +35,9 @@ export interface Banner {
   position: string
   is_active: boolean
   priority: number
-  start_date: string
-  end_date?: string
-  clicks: number
-  impressions: number
+  expires_at?: string
+  clicks?: number
+  impressions?: number
   created_at: string
   updated_at: string
 }

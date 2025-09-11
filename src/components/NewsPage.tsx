@@ -3,6 +3,9 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase, NewsItem } from '../lib/supabase';
 import Header from './Header';
 import Footer from './Footer';
+import { useBanners } from '../hooks/useBanners';
+import { useViews } from '../hooks/useViews';
+import BannerDisplay from './BannerDisplay';
 import { 
   Share2, 
   Facebook, 
@@ -21,10 +24,15 @@ const NewsPage: React.FC = () => {
   const [news, setNews] = useState<NewsItem | null>(null);
   const [relatedNews, setRelatedNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const { getBanner } = useBanners();
+  const { trackView } = useViews();
+  const articleBanner = getBanner('news-article');
   const [error, setError] = useState<string | null>(null);
+  const [hasTrackedView, setHasTrackedView] = useState(false);
 
   useEffect(() => {
     if (slug) {
+      setHasTrackedView(false); // Reset tracking state when slug changes
       loadNews();
     }
   }, [slug]);
@@ -51,14 +59,17 @@ const NewsPage: React.FC = () => {
         console.log('Notícia encontrada:', data);
         setNews(data);
         
-        // Incrementar visualizações
-        try {
-          await supabase
-            .from('news')
-            .update({ views: (data.views || 0) + 1 })
-            .eq('id', data.id);
-        } catch (viewError) {
-          console.error('Erro ao incrementar visualizações:', viewError);
+        // Registrar visualização apenas uma vez por sessão
+        if (!hasTrackedView) {
+          try {
+            await trackView(data.id);
+            setHasTrackedView(true);
+            console.log('Visualização registrada para notícia:', data.id);
+          } catch (viewError) {
+            console.error('Erro ao registrar visualização:', viewError);
+          }
+        } else {
+          console.log('Visualização já registrada para esta notícia nesta sessão');
         }
         
         // Carregar notícias relacionadas
@@ -142,14 +153,17 @@ const NewsPage: React.FC = () => {
       // Se há poucos parágrafos, adicionar pelo menos 1 banner
       if (paragraphs.length <= 2) {
         result = paragraphs.join('</p>') + '</p>'
-        result += `
-          <div class="my-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-center">
+        result += articleBanner ? 
+          (articleBanner.link_url ? 
+            `<div class="my-8 text-center"><a href="${articleBanner.link_url}" target="_blank" rel="noopener noreferrer"><div style="width: 500px; height: 150px; margin: 0 auto; overflow: hidden;"><img src="${articleBanner.image_url}" alt="${articleBanner.title}" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;" /></div></a></div>` :
+            `<div class="my-8 text-center"><div style="width: 500px; height: 150px; margin: 0 auto; overflow: hidden;"><img src="${articleBanner.image_url}" alt="${articleBanner.title}" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;" /></div></div>`
+          ) :
+          `<div class="my-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-center">
             <div class="text-sm text-gray-500 mb-2">Publicidade</div>
             <div class="bg-blue-100 h-32 flex items-center justify-center rounded">
               <span class="text-gray-600 font-medium">Banner de Propaganda</span>
             </div>
-          </div>
-        `
+          </div>`
       } else {
         // Para textos maiores, distribuir banners estrategicamente
         paragraphs.forEach((paragraph, index) => {
@@ -162,14 +176,17 @@ const NewsPage: React.FC = () => {
               (paragraphs.length >= 6 && index === Math.floor(paragraphs.length * 0.75) - 1) // 3/4 do texto
             
             if (shouldAddBanner) {
-              result += `
-                <div class="my-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-center">
+              result += articleBanner ? 
+                (articleBanner.link_url ? 
+                  `<div class="my-8 text-center"><a href="${articleBanner.link_url}" target="_blank" rel="noopener noreferrer"><div style="width: 500px; height: 150px; margin: 0 auto; overflow: hidden;"><img src="${articleBanner.image_url}" alt="${articleBanner.title}" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;" /></div></a></div>` :
+                  `<div class="my-8 text-center"><div style="width: 500px; height: 150px; margin: 0 auto; overflow: hidden;"><img src="${articleBanner.image_url}" alt="${articleBanner.title}" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;" /></div></div>`
+                ) :
+                `<div class="my-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-center">
                   <div class="text-sm text-gray-500 mb-2">Publicidade</div>
                   <div class="bg-blue-100 h-32 flex items-center justify-center rounded">
                     <span class="text-gray-600 font-medium">Banner de Propaganda</span>
                   </div>
-                </div>
-              `
+                </div>`
               bannerCount++
             }
           }
@@ -179,14 +196,18 @@ const NewsPage: React.FC = () => {
         if (bannerCount === 0) {
           const middleIndex = Math.floor(paragraphs.length / 2)
           const newResult = result.split('</p>')
-          newResult.splice(middleIndex, 0, `
-            <div class="my-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-center">
+          newResult.splice(middleIndex, 0, articleBanner ? 
+            (articleBanner.link_url ? 
+              `<div class="my-8 text-center"><a href="${articleBanner.link_url}" target="_blank" rel="noopener noreferrer"><div style="width: 500px; height: 150px; margin: 0 auto; overflow: hidden;"><img src="${articleBanner.image_url}" alt="${articleBanner.title}" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;" /></div></a></div>` :
+              `<div class="my-8 text-center"><div style="width: 500px; height: 150px; margin: 0 auto; overflow: hidden;"><img src="${articleBanner.image_url}" alt="${articleBanner.title}" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;" /></div></div>`
+            ) :
+            `<div class="my-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-center">
               <div class="text-sm text-gray-500 mb-2">Publicidade</div>
               <div class="bg-blue-100 h-32 flex items-center justify-center rounded">
                 <span class="text-gray-600 font-medium">Banner de Propaganda</span>
               </div>
-            </div>
-          `)
+            </div>`
+          )
           result = newResult.join('</p>')
         }
       }

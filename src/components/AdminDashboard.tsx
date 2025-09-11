@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { supabase, NewsItem, Banner } from '../lib/supabase'
+import { useViews } from '../hooks/useViews'
 import { 
   FileText, 
   Image, 
@@ -17,7 +18,9 @@ interface DashboardStats {
   totalBanners: number
   activeBanners: number
   totalViews: number
+  averageViews: number
   todayNews: number
+  viewsToday: number
 }
 
 interface AdminDashboardProps {
@@ -31,10 +34,13 @@ export default function AdminDashboard({ onNavigate }: AdminDashboardProps) {
     totalBanners: 0,
     activeBanners: 0,
     totalViews: 0,
-    todayNews: 0
+    averageViews: 0,
+    todayNews: 0,
+    viewsToday: 0
   })
   const [recentNews, setRecentNews] = useState<NewsItem[]>([])
   const [loading, setLoading] = useState(true)
+  const { getViewStats } = useViews()
 
   useEffect(() => {
     loadDashboardData()
@@ -43,9 +49,10 @@ export default function AdminDashboard({ onNavigate }: AdminDashboardProps) {
   const loadDashboardData = async () => {
     try {
       // Carregar estatísticas
-      const [newsResult, bannersResult] = await Promise.all([
+      const [newsResult, bannersResult, viewStats] = await Promise.all([
         supabase.from('news').select('*').order('created_at', { ascending: false }),
-        supabase.from('banners').select('*')
+        supabase.from('banners').select('*'),
+        getViewStats()
       ])
 
       if (newsResult.data && bannersResult.data) {
@@ -60,8 +67,10 @@ export default function AdminDashboard({ onNavigate }: AdminDashboardProps) {
           featuredNews: news.filter(n => n.is_featured).length,
           totalBanners: banners.length,
           activeBanners: banners.filter(b => b.is_active).length,
-          totalViews: news.reduce((sum, n) => sum + (n.views || 0), 0),
-          todayNews: todayNews.length
+          totalViews: viewStats.totalViews,
+          averageViews: viewStats.averageViews,
+          todayNews: todayNews.length,
+          viewsToday: viewStats.viewsToday
         })
 
         // Pegar as 5 notícias mais recentes
@@ -145,6 +154,7 @@ export default function AdminDashboard({ onNavigate }: AdminDashboardProps) {
           icon={Eye}
           title="Total de Visualizações"
           value={stats.totalViews.toLocaleString()}
+          subtitle={`${stats.viewsToday} hoje`}
           color="purple"
         />
         <StatCard
@@ -162,7 +172,7 @@ export default function AdminDashboard({ onNavigate }: AdminDashboardProps) {
         <StatCard
           icon={BarChart3}
           title="Média de Views"
-          value={stats.totalNews > 0 ? Math.round(stats.totalViews / stats.totalNews) : 0}
+          value={stats.averageViews}
           subtitle="por notícia"
         />
       </div>

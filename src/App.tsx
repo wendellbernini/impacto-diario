@@ -12,6 +12,7 @@ import CienciaPage from './components/CienciaPage';
 import SaudePage from './components/SaudePage';
 import UltimasPage from './components/UltimasPage';
 import SearchPage from './components/SearchPage';
+import HighlightsPage from './components/HighlightsPage';
 import { useScrollToTop } from './hooks/useScrollToTop';
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
         <Route path="/saude" element={<SaudePage />} />
         <Route path="/ultimas" element={<UltimasPage />} />
         <Route path="/buscar" element={<SearchPage />} />
+        <Route path="/destaque" element={<HighlightsPage />} />
         <Route path="/" element={<HomePage />} />
       </Routes>
     </Router>

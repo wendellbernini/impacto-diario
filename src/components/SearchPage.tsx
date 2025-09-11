@@ -144,7 +144,7 @@ const SearchPage: React.FC = () => {
           </div>
 
           {/* Pesquisas Recentes */}
-          {hasSearched && recentSearches.length > 0 && (
+          {recentSearches.length > 0 && (
             <div className="mt-6">
               <div className="flex items-center justify-center gap-2 mb-3">
                 <Clock className="h-4 w-4 text-gray-400" />

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { supabase, NewsItem } from '../lib/supabase'
 import BasicTextEditor from './BasicTextEditor'
+import { useImageUpload } from '../hooks/useImageUpload'
 import { 
   Plus, 
   Edit, 
@@ -40,6 +41,12 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
     is_editor_choice: false
   })
 
+  // Estados para upload de imagem
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const { uploadImage, uploading } = useImageUpload()
+
   const categories = [
     'politica', 'economia', 'seguranca', 'educacao', 'ciencia', 'saude'
   ]
@@ -47,6 +54,29 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
   const locations = [
     'brasil', 'mundo'
   ]
+
+  // Funções para upload de imagem
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      setImageFile(file)
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
+      // Limpar URL quando arquivo é selecionado
+      setFormData({...formData, image_url: ''})
+    }
+  }
+
+  const handleRemoveImage = () => {
+    setImageFile(null)
+    setImagePreview(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
 
   useEffect(() => {
     loadNews()
@@ -73,6 +103,20 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
     setLoading(true)
 
     try {
+      let imageUrl = formData.image_url
+
+      // Se há um arquivo selecionado, fazer upload
+      if (imageFile) {
+        imageUrl = await uploadImage(imageFile, 'news')
+      }
+
+      // Validação: deve ter ou URL ou arquivo
+      if (!imageUrl && !imageFile) {
+        alert('Por favor, forneça uma URL de imagem ou faça upload de um arquivo')
+        setLoading(false)
+        return
+      }
+
       const slug = formData.title
         .toLowerCase()
         .replace(/[^a-z0-9\s-]/g, '')
@@ -85,7 +129,7 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
         content: formData.content,
         category: formData.category,
         location: formData.location,
-        image_url: formData.image_url,
+        image_url: imageUrl,
         image_credits: formData.image_credits,
         is_featured: formData.is_featured,
         is_breaking: formData.is_breaking,
@@ -137,15 +181,18 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
         .eq('id', id)
 
       if (error) throw error
+      
       await loadNews()
       
       // Notificar o dashboard para atualizar
       if (onNewsChange) {
         onNewsChange()
       }
-    } catch (error) {
+      
+      alert('Notícia deletada com sucesso!')
+    } catch (error: any) {
       console.error('Erro ao deletar notícia:', error)
-      alert('Erro ao deletar notícia.')
+      alert('Erro ao deletar notícia: ' + (error?.message || 'Erro desconhecido'))
     }
   }
 
@@ -179,12 +226,23 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
         is_editor_choice: false
       })
     }
+    // Limpar estados de upload
+    setImageFile(null)
+    setImagePreview(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
     setShowModal(true)
   }
 
   const closeModal = () => {
     setShowModal(false)
     setEditingNews(null)
+    setImageFile(null)
+    setImagePreview(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }
 
   const filteredNews = news.filter(item => {
@@ -430,14 +488,70 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
                     </div>
                     
                     <div className="grid grid-cols-1 gap-4">
+                      {/* Opção 1: Upload de Arquivo */}
                       <div>
                         <label className="block text-xs font-medium text-gray-600 mb-1">
-                          URL da Imagem *
+                          Upload de Imagem Local
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileSelect}
+                            className="hidden"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                          >
+                            <Upload className="h-4 w-4" />
+                            {imageFile ? 'Alterar Arquivo' : 'Selecionar Arquivo'}
+                          </button>
+                          {imageFile && (
+                            <button
+                              type="button"
+                              onClick={handleRemoveImage}
+                              className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                            >
+                              Remover
+                            </button>
+                          )}
+                        </div>
+                        {imageFile && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            Arquivo selecionado: {imageFile.name}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Separador OU */}
+                      <div className="flex items-center">
+                        <div className="flex-1 border-t border-gray-300"></div>
+                        <span className="px-3 text-xs text-gray-500 bg-gray-50">OU</span>
+                        <div className="flex-1 border-t border-gray-300"></div>
+                      </div>
+
+                      {/* Opção 2: URL da Imagem */}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">
+                          URL da Imagem
                         </label>
                         <input
                           type="url"
                           value={formData.image_url}
-                          onChange={(e) => setFormData({...formData, image_url: e.target.value})}
+                          onChange={(e) => {
+                            setFormData({...formData, image_url: e.target.value})
+                            // Limpar arquivo quando URL é inserida
+                            if (e.target.value) {
+                              setImageFile(null)
+                              setImagePreview(null)
+                              if (fileInputRef.current) {
+                                fileInputRef.current.value = ''
+                              }
+                            }
+                          }}
                           className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           placeholder="https://exemplo.com/imagem.jpg"
                         />
@@ -461,12 +575,12 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
                     </div>
 
                     {/* Preview da Imagem */}
-                    {formData.image_url && (
+                    {(formData.image_url || imagePreview) && (
                       <div className="mt-3">
                         <p className="text-xs font-medium text-gray-600 mb-2">Preview:</p>
                         <div className="relative">
                           <img
-                            src={formData.image_url}
+                            src={imagePreview || formData.image_url}
                             alt="Preview"
                             className="w-full h-32 object-cover rounded-lg border"
                             onError={(e) => {
@@ -527,11 +641,11 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
                   </button>
                   <button
                     type="submit"
-                    disabled={loading}
+                    disabled={loading || uploading}
                     className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg flex items-center gap-2 transition-colors"
                   >
                     <Save className="h-5 w-5" />
-                    {loading ? 'Salvando...' : 'Salvar'}
+                    {uploading ? 'Fazendo Upload...' : loading ? 'Salvando...' : (editingNews ? 'Atualizar' : 'Criar Notícia')}
                   </button>
                 </div>
               </form>

@@ -5,6 +5,9 @@ import AdminLogin from './AdminLogin'
 import AdminLayout from './AdminLayout'
 import AdminDashboard from './AdminDashboard'
 import NewsManager from './NewsManager'
+import BannerManager from './BannerManager'
+import AnalyticsPage from './AnalyticsPage'
+import SettingsPage from './SettingsPage'
 
 export default function AdminApp() {
   const [user, setUser] = useState<User | null>(null)
@@ -74,11 +77,11 @@ export default function AdminApp() {
       case 'news':
         return <NewsManager onNewsChange={handleRefresh} />
       case 'banners':
-        return <div className="text-center py-12 text-gray-600">Gerenciamento de Banners (Em desenvolvimento)</div>
+        return <BannerManager />
       case 'analytics':
-        return <div className="text-center py-12 text-gray-600">Analytics (Em desenvolvimento)</div>
+        return <AnalyticsPage />
       case 'settings':
-        return <div className="text-center py-12 text-gray-600">Configurações (Em desenvolvimento)</div>
+        return <SettingsPage />
       default:
         return <AdminDashboard key={refreshTrigger} onNavigate={setCurrentPage} />
     }

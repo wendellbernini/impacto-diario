@@ -1,7 +1,11 @@
 import React from 'react';
 import { Facebook, Twitter, Instagram, Linkedin, Youtube } from 'lucide-react';
+import { useSettings } from '../hooks/useSettings';
 
 const Footer: React.FC = () => {
+  const { getSocialMediaLinks } = useSettings();
+  const socialLinks = getSocialMediaLinks();
+
   const footerLinks = {
     Empresa: ['Sobre', 'Carreiras', 'Termos de Serviço', 'Política de Privacidade', 'Publicidade'],
     Conteúdo: ['Últimas', 'Mais Lidas', 'Newsletters', 'Podcasts', 'Resumo Diário Impacto'],
@@ -36,11 +40,31 @@ const Footer: React.FC = () => {
               <span className="text-xs font-semibold tracking-widest text-gray-400" style={{ letterSpacing: '0.2em' }}>DIÁRIO</span>
             </div>
             <div className="flex space-x-4">
-              <Facebook className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
-              <Twitter className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
-              <Instagram className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
-              <Linkedin className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
-              <Youtube className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
+              {socialLinks.facebook && (
+                <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer">
+                  <Facebook className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
+                </a>
+              )}
+              {socialLinks.twitter && (
+                <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer">
+                  <Twitter className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
+                </a>
+              )}
+              {socialLinks.instagram && (
+                <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer">
+                  <Instagram className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
+                </a>
+              )}
+              {socialLinks.linkedin && (
+                <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer">
+                  <Linkedin className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
+                </a>
+              )}
+              {socialLinks.youtube && (
+                <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer">
+                  <Youtube className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
+                </a>
+              )}
             </div>
           </div>
           
