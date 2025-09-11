@@ -1,6 +1,6 @@
-# 📰 Portal de Notícias
+# 📰 Impacto Diário
 
-Um portal de notícias moderno e profissional com painel administrativo completo.
+Portal de notícias moderno e profissional com painel administrativo completo. Cobertura completa sobre os principais acontecimentos do Brasil e do mundo.
 
 ## 🚀 Funcionalidades
 
@@ -36,8 +36,8 @@ Um portal de notícias moderno e profissional com painel administrativo completo
 
 1. **Clone o repositório**
 ```bash
-git clone https://github.com/seu-usuario/portal-noticias.git
-cd portal-noticias
+git clone https://github.com/seu-usuario/impacto-diario.git
+cd impacto-diario
 ```
 
 2. **Instale as dependências**

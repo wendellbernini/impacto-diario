@@ -33,10 +33,10 @@ const Header: React.FC<HeaderProps> = ({ hideTicker = false }) => {
         <div className="flex justify-between items-center h-16">
           {/* Left section */}
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
+            <Link to="/buscar" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <Search className="h-5 w-5 text-gray-400" />
               <span className="text-sm text-gray-600 hidden sm:inline">Buscar</span>
-            </div>
+            </Link>
             
             {/* Linha sutil */}
             <div className="hidden sm:block w-px h-4 bg-gray-300"></div>

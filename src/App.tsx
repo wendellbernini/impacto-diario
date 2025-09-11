@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import AdminApp from './components/AdminApp';
@@ -12,6 +11,7 @@ import EducacaoPage from './components/EducacaoPage';
 import CienciaPage from './components/CienciaPage';
 import SaudePage from './components/SaudePage';
 import UltimasPage from './components/UltimasPage';
+import SearchPage from './components/SearchPage';
 import { useScrollToTop } from './hooks/useScrollToTop';
 
 function App() {
@@ -30,6 +30,7 @@ function App() {
         <Route path="/ciencia" element={<CienciaPage />} />
         <Route path="/saude" element={<SaudePage />} />
         <Route path="/ultimas" element={<UltimasPage />} />
+        <Route path="/buscar" element={<SearchPage />} />
         <Route path="/" element={<HomePage />} />
       </Routes>
     </Router>
