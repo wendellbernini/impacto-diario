@@ -1,9 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Search, Menu, Globe } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import "@fontsource/josefin-sans/700.css";
 
-const Header: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+interface HeaderProps {
+  hideTicker?: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ hideTicker = false }) => {
+  const location = useLocation();
+  
+  // Determinar qual categoria está ativa baseada na rota
+  const getActiveCategory = () => {
+    const path = location.pathname;
+    if (path === '/brasil') return 'brasil';
+    if (path === '/mundo') return 'mundo';
+    if (path === '/politica') return 'politica';
+    if (path === '/economia') return 'economia';
+    if (path === '/seguranca') return 'seguranca';
+    if (path === '/educacao') return 'educacao';
+    if (path === '/ciencia') return 'ciencia';
+    if (path === '/saude') return 'saude';
+    if (path === '/ultimas') return 'ultimas';
+    return 'principal';
+  };
+
+  const activeCategory = getActiveCategory();
 
   return (
     <header className="bg-white  pt-6">
@@ -26,10 +48,10 @@ const Header: React.FC = () => {
 
           {/* Center - Logo */}
           <div className="flex-1 flex justify-center">
-            <div className="flex flex-col items-center leading-none">
+            <Link to="/" className="flex flex-col items-center leading-none hover:opacity-80 transition-opacity">
               <span className="text-3xl font-bold tracking-[0.18em] uppercase" style={{ fontFamily: 'Josefin Sans, sans-serif', letterSpacing: '0.18em' }}>IMPACTO</span>
               <span className="text-base font-semibold tracking-[0.18em] text-gray-500 mt-[-0.2em]" style={{ fontFamily: 'Josefin Sans, sans-serif', letterSpacing: '0.18em' }}>DIÁRIO</span>
-            </div>
+            </Link>
           </div>
 
           {/* Right section */}
@@ -37,7 +59,7 @@ const Header: React.FC = () => {
             <div className="flex items-center space-x-2">
               <Globe className="h-4 w-4 text-gray-400" />
               <button className="text-sm text-gray-600 hover:text-gray-900">
-                Idioma
+                Brasil
               </button>
             </div>
             
@@ -57,24 +79,82 @@ const Header: React.FC = () => {
 
         {/* Navigation - Menu principal */}
         <nav className="flex justify-center py-4">
-          <div className="flex space-x-8 lg:space-x-10">
-            <a href="#" className="relative text-sm font-medium text-gray-700 hover:text-gray-900">
+          <div className="flex space-x-12 lg:space-x-16">
+            <Link to="/" className="relative text-sm font-medium text-gray-700 hover:text-gray-900">
+              {activeCategory === 'principal' ? (
               <span className="bg-blue-600 text-white px-2 py-1 text-xs font-bold uppercase">PRINCIPAL</span>
-            </a>
-            <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">BRASIL</a>
-            <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">MUNDO</a>
-            <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">POLÍTICA</a>
-            <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">ECONOMIA</a>
-            <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-900">SEGURANÇA</a>
-            <a href="#" className="hidden md:block text-sm font-medium text-gray-700 hover:text-gray-900">EDUCAÇÃO</a>
-            <a href="#" className="hidden md:block text-sm font-medium text-gray-700 hover:text-gray-900">CIÊNCIA</a>
-            <a href="#" className="hidden lg:block text-sm font-medium text-gray-700 hover:text-gray-900">SAÚDE</a>
-            <a href="#" className="hidden lg:block text-sm font-medium text-gray-700 hover:text-gray-900">ÚLTIMAS</a>
+              ) : (
+                <span>PRINCIPAL</span>
+              )}
+            </Link>
+            <Link to="/brasil" className="relative text-sm font-medium text-gray-700 hover:text-gray-900">
+              {activeCategory === 'brasil' ? (
+                <span className="bg-blue-600 text-white px-2 py-1 text-xs font-bold uppercase">BRASIL</span>
+              ) : (
+                <span>BRASIL</span>
+              )}
+            </Link>
+            <Link to="/mundo" className="relative text-sm font-medium text-gray-700 hover:text-gray-900">
+              {activeCategory === 'mundo' ? (
+                <span className="bg-blue-600 text-white px-2 py-1 text-xs font-bold uppercase">MUNDO</span>
+              ) : (
+                <span>MUNDO</span>
+              )}
+            </Link>
+            <Link to="/politica" className="relative text-sm font-medium text-gray-700 hover:text-gray-900">
+              {activeCategory === 'politica' ? (
+                <span className="bg-blue-600 text-white px-2 py-1 text-xs font-bold uppercase">POLÍTICA</span>
+              ) : (
+                <span>POLÍTICA</span>
+              )}
+            </Link>
+            <Link to="/economia" className="relative text-sm font-medium text-gray-700 hover:text-gray-900">
+              {activeCategory === 'economia' ? (
+                <span className="bg-blue-600 text-white px-2 py-1 text-xs font-bold uppercase">ECONOMIA</span>
+              ) : (
+                <span>ECONOMIA</span>
+              )}
+            </Link>
+            <Link to="/seguranca" className="relative text-sm font-medium text-gray-700 hover:text-gray-900">
+              {activeCategory === 'seguranca' ? (
+                <span className="bg-blue-600 text-white px-2 py-1 text-xs font-bold uppercase">SEGURANÇA</span>
+              ) : (
+                <span>SEGURANÇA</span>
+              )}
+            </Link>
+            <Link to="/educacao" className="hidden md:block relative text-sm font-medium text-gray-700 hover:text-gray-900">
+              {activeCategory === 'educacao' ? (
+                <span className="bg-blue-600 text-white px-2 py-1 text-xs font-bold uppercase">EDUCAÇÃO</span>
+              ) : (
+                <span>EDUCAÇÃO</span>
+              )}
+            </Link>
+            <Link to="/ciencia" className="hidden md:block relative text-sm font-medium text-gray-700 hover:text-gray-900">
+              {activeCategory === 'ciencia' ? (
+                <span className="bg-blue-600 text-white px-2 py-1 text-xs font-bold uppercase">CIÊNCIA</span>
+              ) : (
+                <span>CIÊNCIA</span>
+              )}
+            </Link>
+            <Link to="/saude" className="hidden lg:block relative text-sm font-medium text-gray-700 hover:text-gray-900">
+              {activeCategory === 'saude' ? (
+                <span className="bg-blue-600 text-white px-2 py-1 text-xs font-bold uppercase">SAÚDE</span>
+              ) : (
+                <span>SAÚDE</span>
+              )}
+            </Link>
+            <Link to="/ultimas" className="hidden lg:block text-sm font-medium text-gray-700 hover:text-gray-900">
+              {activeCategory === 'ultimas' ? (
+                <span className="bg-blue-600 text-white px-2 py-1 text-xs font-bold uppercase">ÚLTIMAS</span>
+              ) : (
+                <span>ÚLTIMAS</span>
+              )}
+            </Link>
           </div>
         </nav>
 
         {/* Ticker animado de cotações */}
-        <Ticker />
+        {!hideTicker && <Ticker />}
       </div>
     </header>
   );

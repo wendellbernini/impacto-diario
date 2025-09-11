@@ -14,10 +14,12 @@ export interface NewsItem {
   image_url?: string
   image_credits?: string
   category: string
+  location: string
   author?: string
   published_at: string
   is_featured: boolean
   is_breaking: boolean
+  is_editor_choice: boolean
   views: number
   slug?: string
   created_at: string

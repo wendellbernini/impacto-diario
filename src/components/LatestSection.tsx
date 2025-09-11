@@ -1,7 +1,16 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { useNews } from '../hooks/useNews';
 
 const LatestSection: React.FC = () => {
-  const latestArticles = [
+  const { getLatestNews, getNewsByCategory, loading } = useNews();
+  
+  const latestNews = getLatestNews(5);
+  const middleNews = getLatestNews(10).slice(5, 10); // 6ª, 7ª, 8ª, 9ª, 10ª
+  const securityNews = getNewsByCategory('seguranca', 3);
+
+  // Fallback para quando não há notícias suficientes
+  const defaultLatestArticles = [
     {
       title: "Empresários correm para hipotecas com taxas no menor nível em quase um ano",
       time: "45 minutos atrás"
@@ -48,6 +57,12 @@ const LatestSection: React.FC = () => {
       summary: "A fintech sueca lidera uma série de captações que animam quem vê meses otimistas à frente no mercado de ações.",
       image: "💼",
       color: "from-green-500 to-blue-500"
+    },
+    {
+      title: "Tesla anuncia novo modelo de carro elétrico com autonomia de 500km",
+      summary: "A montadora americana revela seu mais recente veículo com tecnologia de bateria de última geração.",
+      image: "🚗",
+      color: "from-red-500 to-pink-500"
     }
   ];
 
@@ -65,40 +80,130 @@ const LatestSection: React.FC = () => {
             <div className="border-r border-gray-300 pr-6">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Últimas</h2>
               <div className="space-y-4">
-                {latestArticles.map((article, index) => (
-                  <article key={index} className="group cursor-pointer pb-4 border-b border-gray-200 last:border-b-0">
-                    <h3 className="news-subtitle text-sm text-gray-900 group-hover:text-blue-600 transition-colors leading-tight mb-2">
-                      {article.title}
-                    </h3>
-                    <time className="text-sm text-gray-500">{article.time}</time>
-                  </article>
-                ))}
+                {loading ? (
+                  // Loading state
+                  <>
+                    {[...Array(5)].map((_, index) => (
+                      <div key={index} className="animate-pulse pb-4 border-b border-gray-200 last:border-b-0">
+                        <div className="h-4 bg-gray-300 rounded mb-2"></div>
+                        <div className="h-3 bg-gray-200 rounded w-20"></div>
+                      </div>
+                    ))}
+                  </>
+                ) : latestNews.length > 0 ? (
+                  // Notícias do Supabase
+                  latestNews.map((news, index) => (
+                    <Link key={news.id} to={`/noticia/${news.slug}`}>
+                      <article className="group cursor-pointer pb-4 border-b border-gray-200 last:border-b-0">
+                        <h3 className="news-subtitle text-sm text-gray-900 group-hover:text-blue-600 transition-colors leading-tight mb-2">
+                          {news.title}
+                        </h3>
+                        <time className="text-sm text-gray-500">
+                          {(() => {
+                            const now = new Date();
+                            const published = new Date(news.created_at);
+                            const diffInMinutes = Math.floor((now.getTime() - published.getTime()) / (1000 * 60));
+                            
+                            if (diffInMinutes < 60) {
+                              return `há ${diffInMinutes} minutos`;
+                            } else {
+                              const diffInHours = Math.floor(diffInMinutes / 60);
+                              if (diffInHours === 1) {
+                                return 'há 1 hora';
+                              } else {
+                                return `há ${diffInHours} horas`;
+                              }
+                            }
+                          })()}
+                        </time>
+                      </article>
+                    </Link>
+                  ))
+                ) : (
+                  // Fallback
+                  defaultLatestArticles.map((article, index) => (
+                    <article key={index} className="group cursor-pointer pb-4 border-b border-gray-200 last:border-b-0">
+                      <h3 className="news-subtitle text-sm text-gray-900 group-hover:text-blue-600 transition-colors leading-tight mb-2">
+                        {article.title}
+                      </h3>
+                      <time className="text-sm text-gray-500">{article.time}</time>
+                    </article>
+                  ))
+                )}
               </div>
             </div>
           </div>
 
-          {/* Coluna Central - 4 Notícias Verticais */}
+          {/* Coluna Central - 5 Notícias Verticais */}
           <div className="lg:col-span-6">
             <div className="border-r border-gray-300 pr-6">
               <div className="space-y-6">
-                {centerArticles.map((article, index) => (
-                  <article key={index} className="group cursor-pointer flex space-x-4 pb-6 border-b border-gray-200 last:border-b-0">
-                    {/* Imagem à esquerda */}
-                    <div className={`w-24 h-20 bg-gradient-to-r ${article.color} flex-shrink-0 flex items-center justify-center`}>
-                      <span className="text-white text-xl">{article.image}</span>
-                    </div>
-                    
-                    {/* Conteúdo à direita */}
-                    <div className="flex-1">
-                      <h3 className="news-title text-base text-gray-900 group-hover:text-blue-600 transition-colors leading-tight mb-2">
-                        {article.title}
-                      </h3>
-                      <p className="news-body text-sm text-gray-600 leading-relaxed">
-                        {article.summary}
-                      </p>
-                    </div>
-                  </article>
-                ))}
+                {loading ? (
+                  // Loading state
+                  <>
+                    {[...Array(5)].map((_, index) => (
+                      <div key={index} className="animate-pulse flex space-x-4 pb-6 border-b border-gray-200 last:border-b-0">
+                        <div className="w-24 h-20 bg-gray-300 flex-shrink-0"></div>
+                        <div className="flex-1">
+                          <div className="h-4 bg-gray-300 rounded mb-2"></div>
+                          <div className="h-3 bg-gray-200 rounded"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                ) : middleNews.length > 0 ? (
+                  // Notícias 6ª, 7ª, 8ª, 9ª, 10ª do Supabase
+                  middleNews.map((news, index) => (
+                    <Link key={news.id} to={`/noticia/${news.slug}`}>
+                      <article className="group cursor-pointer flex space-x-4 pb-6 border-b border-gray-200 last:border-b-0">
+                        {/* Imagem à esquerda */}
+                        {news.image_url ? (
+                          <div className="w-24 h-20 flex-shrink-0 overflow-hidden">
+                            <img 
+                              src={news.image_url} 
+                              alt={news.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-24 h-20 bg-gradient-to-r from-blue-600 to-purple-600 flex-shrink-0 flex items-center justify-center">
+                            <span className="text-white text-xl">📰</span>
+                          </div>
+                        )}
+                        
+                        {/* Conteúdo à direita */}
+                        <div className="flex-1">
+                          <h3 className="news-title text-base text-gray-900 group-hover:text-blue-600 transition-colors leading-tight mb-2">
+                            {news.title}
+                          </h3>
+                          <p className="news-body text-sm text-gray-600 leading-relaxed">
+                            {news.summary}
+                          </p>
+                        </div>
+                      </article>
+                    </Link>
+                  ))
+                ) : (
+                  // Fallback
+                  centerArticles.map((article, index) => (
+                    <article key={index} className="group cursor-pointer flex space-x-4 pb-6 border-b border-gray-200 last:border-b-0">
+                      {/* Imagem à esquerda */}
+                      <div className={`w-24 h-20 bg-gradient-to-r ${article.color} flex-shrink-0 flex items-center justify-center`}>
+                        <span className="text-white text-xl">{article.image}</span>
+                      </div>
+                      
+                      {/* Conteúdo à direita */}
+                      <div className="flex-1">
+                        <h3 className="news-title text-base text-gray-900 group-hover:text-blue-600 transition-colors leading-tight mb-2">
+                          {article.title}
+                        </h3>
+                        <p className="news-body text-sm text-gray-600 leading-relaxed">
+                          {article.summary}
+                        </p>
+                      </div>
+                    </article>
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -109,45 +214,120 @@ const LatestSection: React.FC = () => {
               <h2 className="text-xl font-bold text-gray-900">Segurança</h2>
               
               {/* Imagem grande */}
-              <article className="group cursor-pointer">
-                <div className="w-full h-40 bg-gradient-to-r from-red-600 to-purple-600 mb-3 flex items-center justify-center">
-                  <div className="text-white text-center">
-                    <div className="text-2xl mb-1">🛡️</div>
-                    <p className="text-sm">Segurança Digital</p>
-                  </div>
+              {loading ? (
+                <div className="animate-pulse">
+                  <div className="w-full h-40 bg-gray-300 mb-3"></div>
+                  <div className="h-4 bg-gray-300 rounded"></div>
                 </div>
-                <h3 className="news-title text-base text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
-                  Novo ataque cibernético afeta milhões de usuários em todo o mundo
-                </h3>
-              </article>
+              ) : securityNews.length > 0 ? (
+                <Link to={`/noticia/${securityNews[0].slug}`}>
+                  <article className="group cursor-pointer">
+                    {securityNews[0].image_url ? (
+                      <div className="w-full h-40 mb-3 overflow-hidden">
+                        <img 
+                          src={securityNews[0].image_url} 
+                          alt={securityNews[0].title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-full h-40 bg-gradient-to-r from-red-600 to-purple-600 mb-3 flex items-center justify-center">
+                        <div className="text-white text-center">
+                          <div className="text-2xl mb-1">🛡️</div>
+                          <p className="text-sm">Segurança Digital</p>
+                        </div>
+                      </div>
+                    )}
+                    <h3 className="news-title text-base text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
+                      {securityNews[0].title}
+                    </h3>
+                  </article>
+                </Link>
+              ) : (
+                <article className="group cursor-pointer">
+                  <div className="w-full h-40 bg-gradient-to-r from-red-600 to-purple-600 mb-3 flex items-center justify-center">
+                    <div className="text-white text-center">
+                      <div className="text-2xl mb-1">🛡️</div>
+                      <p className="text-sm">Segurança Digital</p>
+                    </div>
+                  </div>
+                  <h3 className="news-title text-base text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
+                    Novo ataque cibernético afeta milhões de usuários em todo o mundo
+                  </h3>
+                </article>
+              )}
 
               {/* Duas imagens menores */}
               <div className="space-y-4">
-                <article className="group cursor-pointer">
-                  <div className="flex space-x-3">
-                    <div className="w-16 h-12 bg-gradient-to-r from-orange-500 to-red-500 flex-shrink-0 flex items-center justify-center">
-                      <span className="text-white text-sm">🔒</span>
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="news-subtitle text-sm text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
-                        WhatsApp implementa nova camada de criptografia
-                      </h4>
-                    </div>
-                  </div>
-                </article>
+                {loading ? (
+                  <>
+                    {[...Array(2)].map((_, index) => (
+                      <div key={index} className="animate-pulse flex space-x-3">
+                        <div className="w-16 h-12 bg-gray-300 flex-shrink-0"></div>
+                        <div className="flex-1">
+                          <div className="h-3 bg-gray-300 rounded"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                ) : securityNews.length > 1 ? (
+                  // Notícias de segurança do Supabase
+                  securityNews.slice(1, 3).map((news, index) => (
+                    <Link key={news.id} to={`/noticia/${news.slug}`}>
+                      <article className="group cursor-pointer">
+                        <div className="flex space-x-4">
+                          {news.image_url ? (
+                            <div className="w-20 h-16 flex-shrink-0 overflow-hidden">
+                              <img 
+                                src={news.image_url} 
+                                alt={news.title}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-20 h-16 bg-gradient-to-r from-orange-500 to-red-500 flex-shrink-0 flex items-center justify-center">
+                              <span className="text-white text-base">🔒</span>
+                            </div>
+                          )}
+                          <div className="flex-1">
+                            <h4 className="news-subtitle text-sm text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
+                              {news.title}
+                            </h4>
+                          </div>
+                        </div>
+                      </article>
+                    </Link>
+                  ))
+                ) : (
+                  // Fallback
+                  <>
+                    <article className="group cursor-pointer">
+                      <div className="flex space-x-4">
+                        <div className="w-20 h-16 bg-gradient-to-r from-orange-500 to-red-500 flex-shrink-0 flex items-center justify-center">
+                          <span className="text-white text-base">🔒</span>
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="news-subtitle text-sm text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
+                            WhatsApp implementa nova camada de criptografia
+                          </h4>
+                        </div>
+                      </div>
+                    </article>
 
-                <article className="group cursor-pointer">
-                  <div className="flex space-x-3">
-                    <div className="w-16 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 flex-shrink-0 flex items-center justify-center">
-                      <span className="text-white text-sm">⚠️</span>
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="news-subtitle text-sm text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
-                        Golpes por SMS aumentam 300% no último trimestre
-                      </h4>
-                    </div>
-                  </div>
-                </article>
+                    <article className="group cursor-pointer">
+                      <div className="flex space-x-4">
+                        <div className="w-20 h-16 bg-gradient-to-r from-indigo-500 to-purple-500 flex-shrink-0 flex items-center justify-center">
+                          <span className="text-white text-base">⚠️</span>
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="news-subtitle text-sm text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
+                            Golpes por SMS aumentam 300% no último trimestre
+                          </h4>
+                        </div>
+                      </div>
+                    </article>
+                  </>
+                )}
               </div>
               
               {/* Banner de Publicidade */}

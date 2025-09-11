@@ -45,7 +45,7 @@ const Footer: React.FC = () => {
           </div>
           
           <p className="text-gray-400 text-sm">
-            © 2024 Impacto Diário. Todos os direitos reservados.
+            © 2025 Impacto Diário. Todos os direitos reservados.
           </p>
         </div>
       </div>

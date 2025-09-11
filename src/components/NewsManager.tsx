@@ -31,15 +31,21 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
     title: '',
     summary: '',
     content: '',
-    category: 'principal',
+    category: 'economia',
+    location: 'brasil',
     image_url: '',
     image_credits: '',
     is_featured: false,
-    is_breaking: false
+    is_breaking: false,
+    is_editor_choice: false
   })
 
   const categories = [
-    'principal', 'brasil', 'mundo', 'politica', 'economia', 'seguranca', 'educacao', 'ciencia', 'saude', 'ultimas'
+    'politica', 'economia', 'seguranca', 'educacao', 'ciencia', 'saude'
+  ]
+
+  const locations = [
+    'brasil', 'mundo'
   ]
 
   useEffect(() => {
@@ -78,9 +84,12 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
         summary: formData.summary,
         content: formData.content,
         category: formData.category,
+        location: formData.location,
         image_url: formData.image_url,
+        image_credits: formData.image_credits,
         is_featured: formData.is_featured,
         is_breaking: formData.is_breaking,
+        is_editor_choice: formData.is_editor_choice,
         slug,
         updated_at: new Date().toISOString()
       }
@@ -148,10 +157,12 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
         summary: newsItem.summary || '',
         content: newsItem.content || '',
         category: newsItem.category,
+        location: newsItem.location,
         image_url: newsItem.image_url || '',
         image_credits: newsItem.image_credits || '',
         is_featured: newsItem.is_featured,
-        is_breaking: newsItem.is_breaking
+        is_breaking: newsItem.is_breaking,
+        is_editor_choice: newsItem.is_editor_choice
       })
     } else {
       setEditingNews(null)
@@ -159,11 +170,13 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
         title: '',
         summary: '',
         content: '',
-        category: 'principal',
+        category: 'economia',
+        location: 'brasil',
         image_url: '',
         image_credits: '',
         is_featured: false,
-        is_breaking: false
+        is_breaking: false,
+        is_editor_choice: false
       })
     }
     setShowModal(true)
@@ -260,8 +273,11 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
                     </p>
                     
                     <div className="flex items-center gap-4 text-xs text-gray-500">
-                      <span className="capitalize bg-gray-100 px-2 py-1 rounded">
+                      <span className="capitalize bg-blue-100 text-blue-800 px-2 py-1 rounded">
                         {item.category}
+                      </span>
+                      <span className="capitalize bg-green-100 text-green-800 px-2 py-1 rounded">
+                        {item.location}
                       </span>
                       <span className="flex items-center gap-1">
                         <Eye className="h-4 w-4" />
@@ -371,20 +387,39 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
                     </p>
                   </div>
 
-                  {/* Categoria */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Categoria
-                    </label>
-                    <select
-                      value={formData.category}
-                      onChange={(e) => setFormData({...formData, category: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      {categories.map(cat => (
-                        <option key={cat} value={cat} className="capitalize">{cat}</option>
-                      ))}
-                    </select>
+                  {/* Categoria e Localidade */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Categoria *
+                      </label>
+                      <select
+                        value={formData.category}
+                        onChange={(e) => setFormData({...formData, category: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                      >
+                        {categories.map(cat => (
+                          <option key={cat} value={cat} className="capitalize">{cat}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Localidade *
+                      </label>
+                      <select
+                        value={formData.location}
+                        onChange={(e) => setFormData({...formData, location: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                      >
+                        {locations.map(loc => (
+                          <option key={loc} value={loc} className="capitalize">{loc}</option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
 
                   {/* Imagem Principal */}
@@ -449,7 +484,7 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
                   </div>
 
                   {/* Checkboxes */}
-                  <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-6 flex-wrap">
                     <label className="flex items-center">
                       <input
                         type="checkbox"
@@ -468,6 +503,16 @@ export default function NewsManager({ onNewsChange }: NewsManagerProps) {
                         className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
                       />
                       <span className="ml-2 text-sm text-gray-700">Notícia Urgente</span>
+                    </label>
+
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={formData.is_editor_choice}
+                        onChange={(e) => setFormData({...formData, is_editor_choice: e.target.checked})}
+                        className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">Escolha do Editor</span>
                     </label>
                   </div>
                 </div>
